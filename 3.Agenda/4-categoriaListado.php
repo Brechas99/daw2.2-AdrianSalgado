@@ -21,9 +21,9 @@
     <tr>
         <th>Nombre</th>
     </tr>
-
     <?php foreach ($rs as $fila) { ?>
-        <tr>
+    <tr>
+
             <td><a href='2-categoriaFicha.php?id=<?=$fila["id"]?>'> <?=$fila["nombre"] ?> </a></td>
             <td><a href='3-categoriaEliminar.php?id=<?=$fila["id"]?>'> (X)                   </a></td>
         </tr>

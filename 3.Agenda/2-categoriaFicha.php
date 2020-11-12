@@ -58,13 +58,6 @@
 
 </form>
 
-<br />
-
-<a href='3-categoriaEliminar.php?id=<?=$id?>'>Eliminar categoría</a>
-
-<br />
-<br />
-
 <a href='4-categoriaListado.php'>Volver al listado de categorías.</a>
 
 </body>

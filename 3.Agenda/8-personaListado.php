@@ -1,4 +1,5 @@
 <?php
+//duda: como poner el nombre de la categoria y no el id
 
     require_once "1-obtenerConexion.php";
 
@@ -41,22 +42,22 @@
 
     <?php foreach ($rs as $fila) { ?>
         <tr>
-            <td><a href='6-personaFicha.php?id=<?=$fila["id"]?>'><?=$fila["pNombre"]?></a> </td>
-            <td><a href='6-personaFicha.php?id=<?=$fila["id"]?>'><?=$fila["pTelefono"]?></a> </td>
-            <td><a href='6-personaFicha.php?id=<?=$fila["id"]?>'><?=$fila["pCategoriaId"]?></a> </td>
-            <td><a href='7-personaEliminar.php?id=<?=$fila["id"]?>'> (X)         </a> </td>
+            <td><a href='6-personaFicha.php?id=<?=$fila["pId"]?>'><?=$fila["pNombre"]?></a> </td>
+            <td><a href='6-personaFicha.php?id=<?=$fila["pId"]?>'><?=$fila["pTelefono"]?></a> </td>
+            <td><a href='4-categoriaListado.php?id=<?=$fila["cId"]?>'><?=$fila["pCategoriaId"]?></a> </td>
+            <td><a href='7-personaEliminar.php?id=<?=$fila["pId"]?>'> (X)         </a> </td>
         </tr>
    <?php } ?>
 </table>
 
 <br/>
 
-<a href="6-personaFicha.php">Crear entrada</a>
+<a href="6-personaFicha.php?id=-1">Crear entrada</a>
 
 <br/>
 <br/>
 
-<a href="8-personaListado.php">Gestionar listado de personas</a>
+<a href="4-categoriaListado.php">Gestionar listado de Categorias</a>
 </body>
 </html>
 

@@ -7,17 +7,17 @@
 	$nuevaEntrada = ($id == -1);
 
 	if($nuevaEntrada){
-		$categoriaNombre = "<Introduzca nombre>";
+		$personaNombre = "<Introduzca nombre>";
 		$telefono = "<Introduzca el telefono>";
 		$personaCategoriaId = "<Introduzca el id de su categoria>";
 	} else {
-		$sql = "SELECT nombre, telefono, categoriaId FROM persona WHERE id=?";
+		$sqlPersona = "SELECT nombre, telefono, categoriaId FROM persona WHERE id=?";
 
-		$select= $conexion->prepare($sql);
+		$select= $conexion->prepare($sqlPersona);
 		$select->execute([$id]);
 		$rs= $select->fetchAll();
 
-		$categoriaNombre = $rs[0]["nombre"];
+		$personaNombre = $rs[0]["nombre"];
 		$telefono = $rs[0]["telefono"];
 		$personaCategoriaId = $rs[0]["categoriaId"];
 	}
@@ -39,7 +39,7 @@
 	<ul>
 		<li>
 			<strong>Nombre: </strong>
-			<input type="text" name="pNombre" value="<?=$categoriaNombre?>"/>
+			<input type="text" name="pNombre" value="<?=$personaNombre?>"/>
 		</li>
 
 		<li>
@@ -60,13 +60,7 @@
 	<?php } ?>
 </form>
 
-<br/>
-
-<a href="7-personaEliminar.php?id=<?=$id?>">Eliminar persona</a>
-<br/>
-<br/>
-
-<a href="4-categoriaListado.php">Volver al listado de categorias</a>
+<a href="8-personaListado.php">Volver al listado de Personas</a>
 
 </body>
 </html>
