@@ -9,6 +9,7 @@
                SELECT
                     p.id        AS pId,
                     p.nombre    AS pNombre,
+                    p.apellidos AS pApellidos,
                     c.id        AS cId,
                     c.nombre    AS cNombre,
                     p.telefono  AS pTelefono,
@@ -36,6 +37,7 @@
 <table border="1">
     <tr>
         <th>Nombre</th>
+        <th>Apellidos</th>
         <th>Telefono</th>
         <th>CategoriaId</th>
     </tr>
@@ -43,6 +45,7 @@
     <?php foreach ($rs as $fila) { ?>
         <tr>
             <td><a href='6-personaFicha.php?id=<?=$fila["pId"]?>'><?=$fila["pNombre"]?></a> </td>
+            <td><a href='6-personaFicha.php?id=<?=$fila["pId"]?>'><?=$fila["pApellidos"]?></a> </td>
             <td><a href='6-personaFicha.php?id=<?=$fila["pId"]?>'><?=$fila["pTelefono"]?></a> </td>
             <td><a href='4-categoriaListado.php?id=<?=$fila["cId"]?>'><?=$fila["pCategoriaId"]?></a> </td>
             <td><a href='7-personaEliminar.php?id=<?=$fila["pId"]?>'> (X)         </a> </td>

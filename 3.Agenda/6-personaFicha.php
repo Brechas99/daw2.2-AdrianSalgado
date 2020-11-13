@@ -8,16 +8,18 @@
 
 	if($nuevaEntrada){
 		$personaNombre = "<Introduzca nombre>";
+		$personaApellidos = "<Introduzca apellidos>";
 		$telefono = "<Introduzca el telefono>";
 		$personaCategoriaId = "<Introduzca el id de su categoria>";
 	} else {
-		$sqlPersona = "SELECT nombre, telefono, categoriaId FROM persona WHERE id=?";
+		$sqlPersona = "SELECT nombre, apellidos, telefono, categoriaId FROM persona WHERE id=?";
 
 		$select= $conexion->prepare($sqlPersona);
 		$select->execute([$id]);
 		$rs= $select->fetchAll();
 
 		$personaNombre = $rs[0]["nombre"];
+		$personaApellidos = $rs[0]["apellidos"];
 		$telefono = $rs[0]["telefono"];
 		$personaCategoriaId = $rs[0]["categoriaId"];
 	}
@@ -42,6 +44,11 @@
 			<input type="text" name="pNombre" value="<?=$personaNombre?>"/>
 		</li>
 
+        <li>
+            <strong>Apellidos: </strong>
+            <input type="text" name="pApellidos" value="<?=$personaApellidos?>"/>
+        </li>
+
 		<li>
 			<strong>Telefono: </strong>
 			<input type="text" name="pTelefono" value="<?=$telefono?>"/>
@@ -51,6 +58,7 @@
 			<strong>Categoria id: </strong>
 			<input type="number" name="pCategoriaId" value="<?=$personaCategoriaId?>"/>
 		</li>
+
 	</ul>
 
 	<?php if($nuevaEntrada) { ?>
