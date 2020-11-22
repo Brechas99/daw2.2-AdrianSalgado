@@ -39,7 +39,7 @@
         <th>Nombre</th>
         <th>Apellidos</th>
         <th>Telefono</th>
-        <th>CategoriaId</th>
+        <th>Categoria</th>
     </tr>
 
     <?php foreach ($rs as $fila) { ?>
@@ -47,7 +47,7 @@
             <td><a href='6-personaFicha.php?id=<?=$fila["pId"]?>'><?=$fila["pNombre"]?></a> </td>
             <td><a href='6-personaFicha.php?id=<?=$fila["pId"]?>'><?=$fila["pApellidos"]?></a> </td>
             <td><a href='6-personaFicha.php?id=<?=$fila["pId"]?>'><?=$fila["pTelefono"]?></a> </td>
-            <td><a href='4-categoriaListado.php?id=<?=$fila["cId"]?>'><?=$fila["pCategoriaId"]?></a> </td>
+            <td><a href='4-categoriaListado.php?id=<?=$fila["cId"]?>'><?=$fila["cNombre"]?></a> </td>
             <td><a href='7-personaEliminar.php?id=<?=$fila["pId"]?>'> (X)         </a> </td>
         </tr>
    <?php } ?>
