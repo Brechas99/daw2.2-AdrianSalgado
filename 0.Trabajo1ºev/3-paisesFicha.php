@@ -56,7 +56,7 @@
 
 <br>
 
-<p>Personas que pertenecen actualmente a la categoría:</p>
+<p>Jugadores que son de este pais:</p>
 
 <ul>
     <?php
