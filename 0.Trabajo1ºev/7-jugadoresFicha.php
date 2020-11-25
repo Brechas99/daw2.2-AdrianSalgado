@@ -21,6 +21,10 @@
         $select->execute([$id]);
         $rsJugador = $select->fetchAll();
 
+        print_r($rsJugador);
+        echo $id;
+        echo $sqlPersona;
+
         $jugadorNombre = $rsJugador[0]["nombre"];
         $jugadorEquipo = $rsJugador[0]["equipo"];
         $jugadorEdad = $rsJugador[0]["edad"];
@@ -32,7 +36,7 @@
     $sqlPaises = "SELECT id, pais FROM paises ORDER BY pais";
 
     $select = $conexion->prepare($sqlPaises);
-    $select->execute([]);
+    $select->execute([$id]);
     $rsPaises = $select->fetchAll();
 
 ?>
@@ -96,6 +100,7 @@
     <?php } ?>
 
 </form>
+
 
 <a href='6-jugadoresListado.php'>Volver al listado de jugadores</a>
 

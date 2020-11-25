@@ -8,5 +8,5 @@
     $sentencia = $conexion->prepare($sql);
     $sentencia->execute([$id, $id]);
 
-    redireccionar("6-jugadoresListado.php");
+    cambiarEstrella("6-jugadoresListado.php");
 ?>

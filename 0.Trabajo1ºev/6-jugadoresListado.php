@@ -2,18 +2,18 @@
     require_once "1-conexion.php";
     $conexion = obtenerPDOconexionBD();
 
-    $mostrarEstrella = isset($_REQUEST["conEstrella"]);
+
 
     session_start();
-    if(isset($_REQUEST["conEstrella"])){
+    if (isset($_REQUEST["conEstrella"])) {
         $_SESSION["conEstrella"] = true;
     }
 
-    if(isset($_REQUEST["todos"])){
+    if(isset($_REQUEST["todos"])) {
         unset($_SESSION["conEstrella"]);
     }
 
-    $opcionClausulaWhere = $mostrarEstrella ? "WHERE j.estrella =1" : "";
+    $opcionClausulaWhere = isset($_SESSION["conEstrella"]) ? "AND j.estrella = 1" : "";
 
     $sql = "
                SELECT
@@ -75,7 +75,7 @@
             <td><a href='7-jugadoresFicha.php?id=<?=$fila["jId"]?>'><?=$fila["jEdad"]?></a> </td>
             <td><a href='7-jugadoresFicha.php?id=<?=$fila["jId"]?>'><?=$fila["jPosicion"]?></a> </td>
             <td hidden><a href='7-jugadoresFicha.php?id=<?=$fila["jId"]?>'><?=$fila["jEstrella"]?></a> </td>
-            <td><a href='7-jugadoresFicha.php?id=<?=$fila["pId"]?>'><?=$fila["pPais"]?></a> </td>
+            <td><a href='2-paisesListado.php?id=<?=$fila["pId"]?>'><?=$fila["pPais"]?></a> </td>
             <td><a href='8-jugadoresEliminar.php?id=<?=$fila["jId"]?>'>  (X)           </a> </td>
         </tr>
     <?php } ?>

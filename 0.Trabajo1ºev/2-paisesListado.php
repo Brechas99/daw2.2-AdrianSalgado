@@ -17,14 +17,18 @@
 <h1>Países</h1>
 
 <table border="1">
+
     <tr>
         <th>País</th>
     </tr>
+
     <?php foreach ($rs as $fila) { ?>
+
         <tr>
             <td><a href='3-paisesFicha.php?id=<?=$fila["id"]?>'><?=$fila["pais"]?></a> </td>
             <td><a href='4-paisesEliminar.php?id=<?=$fila["id"]?>'>    (X)      </a> </td>
         </tr>
+
    <?php } ?>
 
 </table>
