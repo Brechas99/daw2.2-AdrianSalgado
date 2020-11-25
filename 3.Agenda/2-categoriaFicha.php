@@ -21,6 +21,12 @@
         $categoriaNombre = $rs[0]["nombre"]; //*
 
     }
+
+    $sql = "SELECT * FROM persona WHERE categoriaId=? ORDER BY nombre";
+
+    $select = $conexion->prepare($sql);
+    $select->execute([$id]); // Array vacío porque la consulta preparada no requiere parámetros.
+    $rsPersonasDeLaCategoria = $select->fetchAll();
 ?>
 
 <html>
@@ -43,12 +49,11 @@
 
     <input type='hidden' name='id' value='<?=$id?>' />
 
-    <ul>
-        <li>
-            <strong>Nombre: </strong>
-            <input type='text' name='nombre' value='<?=$categoriaNombre?>' />
-        </li>
-    </ul>
+    <label for='nombre'>Nombre</label>
+    <input type='text' name='nombre' value='<?=$categoriaNombre?>' />
+    <br/>
+
+    <br/>
 
     <?php if ($nuevaEntrada) { ?>
         <input type='submit' name='crear' value='Crear categoría' />
@@ -57,6 +62,19 @@
     <?php } ?>
 
 </form>
+
+<br>
+
+<p>Personas que son de esta categoria:</p>
+
+<ul>
+    <?php
+    foreach ($rsPersonasDeLaCategoria as $fila) {
+        echo "<li>$fila[nombre] - $fila[telefono]</li>";
+    }
+    ?>
+</ul>
+
 
 <a href='4-categoriaListado.php'>Volver al listado de categorías.</a>
 

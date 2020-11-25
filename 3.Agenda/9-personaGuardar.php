@@ -8,15 +8,16 @@
 	$apellidos = $_REQUEST["pApellidos"];
 	$telefono= $_REQUEST["pTelefono"];
 	$personaCategoriaId= (int)$_REQUEST["pCategoriaId"];
+    $estrella = isset($_REQUEST["estrella"]);
 
 	$nuevaEntrada = ($id == -1);
 	
 	if ($nuevaEntrada) {
- 		$sql = "INSERT INTO persona (nombre, apellidos, telefono, categoriaId) VALUES (?, ?, ?, ?)";
- 		$parametros = [$nombre, $apellidos, $telefono, $personaCategoriaId];
+ 		$sql = "INSERT INTO persona (nombre, apellidos, telefono, estrella, categoriaId) VALUES (?, ?, ?, ?, ?)";
+ 		$parametros = [$nombre, $apellidos, $telefono, $estrella?1:0, $personaCategoriaId];
 	} else {
- 		$sql = "UPDATE persona SET nombre=?, apellidos=?, telefono=?, categoriaId=? WHERE id=?";
-        $parametros = [$nombre, $apellidos, $telefono, $personaCategoriaId, $id];
+ 		$sql = "UPDATE persona SET nombre=?, apellidos=?, telefono=?, estrella=?, categoriaId=? WHERE id=?";
+        $parametros = [$nombre, $apellidos, $telefono, $estrella?1:0, $personaCategoriaId, $id];
  	}
  	
     $sentencia = $conexion->prepare($sql);
