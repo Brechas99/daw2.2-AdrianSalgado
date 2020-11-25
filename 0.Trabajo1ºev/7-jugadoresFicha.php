@@ -21,10 +21,6 @@
         $select->execute([$id]);
         $rsJugador = $select->fetchAll();
 
-        print_r($rsJugador);
-        echo $id;
-        echo $sqlPersona;
-
         $jugadorNombre = $rsJugador[0]["nombre"];
         $jugadorEquipo = $rsJugador[0]["equipo"];
         $jugadorEdad = $rsJugador[0]["edad"];
