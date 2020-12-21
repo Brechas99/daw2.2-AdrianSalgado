@@ -39,6 +39,7 @@
     $select ->execute([]);
 
     $rs = $select->fetchAll();
+
 ?>
 
 <html>

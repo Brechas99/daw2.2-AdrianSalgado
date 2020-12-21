@@ -1,5 +1,7 @@
 <?php
 
+    declare(strict_types=1);
+
     function obtenerPDOconexionBD(): PDO
     {
         $servidor= "localhost";
@@ -14,6 +16,17 @@
             exit("Error al conectar");
         }
         return $conexionBD;
+    }
+
+    function cambiarEstrella($url)
+    {
+        header("Location: $url");
+        exit;
+    }
+
+    function syso($contenido)
+    {
+        file_put_contents('php://stderr', $contenido . "\n");
     }
 
 ?>
