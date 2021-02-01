@@ -3,7 +3,8 @@
 require_once "Clases.php";
 require_once "Varios.php";
 
-class DAO
+class
+DAO
 {
     private static $pdo = null;
 

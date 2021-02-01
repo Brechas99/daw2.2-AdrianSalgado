@@ -4,7 +4,7 @@
 	// Se recoge el parámetro "id" de la request.
 	$id = (int)$_REQUEST["id"];
 
-    $resultado = DAO::categoriaEliminar($id);
+    $resultado = dao::categoriaEliminar($id);
 ?>
 
 
