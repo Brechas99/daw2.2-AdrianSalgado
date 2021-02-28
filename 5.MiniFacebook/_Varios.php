@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-
+session_start();
 function obtenerPdoConexionBD(): PDO
 {
     $servidor = "localhost";
@@ -24,38 +24,80 @@ function obtenerPdoConexionBD(): PDO
     return $conexion;
 }
 
-function obtenerUsuario(string $identificador, string $contrasenna): ?array
+function crearUsuario($usuario, $contrasenna, $nombre, $apellidos)
 {
-    // TODO Pendiente hacer.
+    $pdo = obtenerPdoConexionBD();
+    $sql = "SELECT * FROM Usuario WHERE identificador=?";
+    $sentencia= $pdo->prepare($sql);
+    //$sqlExito = $sentencia->execute([$identificador]);
 
-    // "SELECT * FROM Usuario WHERE identificador=? AND contrasenna=?"
+    $rs = $sentencia->fetchAll();
 
-    // Conectar con BD, lanzar consulta, ver si viene 1 fila o ninguna...
-
-    // Devolver una cosa u otra para que sepan (true/false).
-    //return $rs[0];
-    return ["id" => 17, "identificador" => "jlopez", ...];
+    if(!$rs[0]) {
+        $sql= "INSERT INTO usuario(identificador, contrasenna, nombre, apellidos) VALUES(?, ?, ?, ?)";
+        $sentencia = $pdo->prepare($sql);
+        $sqlExito = $sentencia->execute([$usuario, $contrasenna, $nombre, $apellidos]);
+    }else {
+        redireccionar("UsuarioNuevoFormulario.php?error");
+    }
 }
 
-function marcarSesionComoIniciada(array $arrayUsuario)
+function obtenerUsuario(string $identificador, string $contrasenna): ?array
+{
+    $pdo = obtenerPdoconexionBD();
+
+    $sql= "SELECT * FROM Usuario WHERE identificador=? AND contrasenna=?";
+    $sentencia=$pdo->prepare($sql);
+    $sqlConExito = $sentencia->execute([$identificador,$contrasenna]);
+
+    $correcto = ($sqlConExito && $sentencia->rowCount()==1);
+
+    $rs = $sentencia->fetchAll();
+
+    if($correcto) {
+        return ["id" => $rs[0]["id"], "identificador" => $rs[0]["identificador"],"contrasenna" => $rs[0]["contrasenna"],
+            "codigoCookie" => $rs[0]["codigoCookie"], "tipoUsuario" => $rs[0]["tipoUsuario"], "nombre" => $rs[0]["nombre"],
+            "apellidos" => $rs[0]["apellidos"]];
+    }else
+        return null;
+}
+
+function marcarSesionComoIniciada($arrayUsuario)
 {
     // TODO Anotar en el post-it todos estos datos:
     // $_SESSION["id"] = ...
     // $_SESSION["identificador"] = ...
     // ...
+
+    $_SESSION["id"] = $arrayUsuario["id"];
+    $_SESSION["identificador"] = $arrayUsuario["identificador"];
+    $_SESSION["contrasenna"] = $arrayUsuario["contrasenna"];
+    $_SESSION["tipoUsuario"] = $arrayUsuario["tipoUsuario"];
+    $_SESSION["nombre"] = $arrayUsuario["nombre"];
+    $_SESSION["apellidos"] = $arrayUsuario["apellidos"];
+
+
 }
 
-function haySesionIniciada(): boolean
+function haySesionIniciada(): ?bool
 {
     // TODO Pendiente hacer la comprobación.
+    if(isset($_SESSION["id"])) {
+        $conectado = true;
+    }else {
+        $conectado = false;
+    }
+
+    return $conectado;
 
     // Está iniciada si isset($_SESSION["id"])
 
-    return false;
 }
 
 function cerrarSesion()
 {
+    session_destroy();
+    unset($_SESSION["id"]);
     // TODO session_destroy() y unset de $_SESSION (por si acaso).
 }
 

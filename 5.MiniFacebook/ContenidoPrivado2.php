@@ -1,10 +1,12 @@
 <?php
 
-    // TODO Ídem.
+    require_once "_Varios.php";
+
+    if (!haySesionIniciada()) {
+        redireccionar("SesionInicioMostrarFormulario.php");
+    }
 
 ?>
-
-
 
 <html>
 
@@ -25,6 +27,10 @@
 <a href='ContenidoPublico1.php'>Ir al Contenido Público 1</a>
 
 <a href='ContenidoPrivado1.php'>Ir al Contenido Privado 1</a>
+
+<br>
+
+<a href="SesionCerrar.php">Cerrar Sesion</a>
 
 </body>
 

@@ -2,19 +2,11 @@
 
     require_once "_Varios.php";
 
-    // TODO Hay que comprobar si hay sesión-usuario iniciada.
-    //   - Si la hay, no intervenimos. Dejamos que la pág se cargue.
-    //     (Mostrar info del usuario logueado y tal...)
-    //   - Si NO la hay, redirigimos a SesionInicioMostrarFormulario.php
-    // (Organizar estas comprobaciones en funciones en _Varios.php para evitar copypaste.)
-
     if (!haySesionIniciada()) {
-        // TODO Redirigir...
+        redireccionar("SesionInicioMostrarFormulario.php");
     }
 
 ?>
-
-
 
 <html>
 
@@ -35,6 +27,10 @@
 <a href='ContenidoPublico1.php'>Ir al Contenido Público 1</a>
 
 <a href='ContenidoPrivado2.php'>Ir al Contenido Privado 2</a>
+
+<br>
+
+<a href="SesionCerrar.php">Cerrar Sesion</a>
 
 </body>
 
