@@ -2,8 +2,15 @@
     require_once "_com/DAO.php";
 
     $id= (int) $_REQUEST["id"];
-    $nombre= $_REQUEST["nombre"];
-    $nuevaEntrada = dao::categoriaCrear($nombre);
+
+    $nuevaEntrada = ($id == -1);
+
+    if($nuevaEntrada){
+        $categoriaNombre = "<Introduzca Nombre>";
+    }else{
+        $categoria = DAO::categoriaObtenerPorId($id);
+        $categoriaNombre = $categoria->getNombre();
+    }
 ?>
 
 <html>
@@ -18,12 +25,12 @@
     <h1>Ficha de categoría</h1>
 <?php } ?>
 
-<form method='post' action='CategoriaGuardar.php'>
+<form method='post' action='CategoriaGuardarDAO.php'>
 
     <input type='hidden' name='id' value='<?=$id?>' />
 
     <label for='nombre'>Nombre</label>
-    <input type='text' name='nombre' value='<?=$nombre?>' />
+    <input type='text' name='nombre' value='<?=$categoriaNombre?>' />
     <br/>
 
     <br/>
@@ -40,13 +47,13 @@
 
 <?php if (!$nuevaEntrada) { ?>
     <br />
-    <a href='CategoriaEliminar.php?id=<?=$id?>'>Eliminar categoría</a>
+    <a href='CategoriaEliminarDAO.php?id=<?=$id?>'>Eliminar categoría</a>
 <?php } ?>
 
 <br />
 <br />
 
-<a href='CategoriaListado.php'>Volver al listado de categorías.</a>
+<a href='CategoriaListadoDAO.php'>Volver al listado de categorías.</a>
 
 
 </body>
