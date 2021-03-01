@@ -122,24 +122,24 @@ DAO
 
     public static function crearPersonaDesdeRs(array $fila): Persona
     {
-        return new Persona($fila["pId"], $fila["pNombre"], $fila["pApellidos"], $fila["pTelefono"], $fila["pEstrella"], $fila["pCategoriaId"]);
+        return new Persona($fila["id"], $fila["nombre"], $fila["apellidos"], $fila["telefono"], $fila["estrella"], $fila["categoriaId"]);
     }
 
     public static function personaObtenerTodas():array
     {
         $datos=[];
         $consulta= self::ejecutarConsulta("SELECT
-                    p.Id     AS pId,
-                    p.categoriaId   AS pCategoriaId,
-                    p.nombre AS pNombre,
-                    p.apellidos AS pApellidos,
-                    p.telefono AS pTelefono,
-                    p.estrella AS pEstrella,
+                    p.Id     AS id,
+                    p.categoriaId   AS categoriaId,
+                    p.nombre AS nombre,
+                    p.apellidos AS apellidos,
+                    p.telefono AS telefono,
+                    p.estrella AS estrella,
                     c.id     AS cId,
                     c.nombre AS cNombre
                 FROM
-                   persona AS p INNER JOIN categoria AS c
-                   ON p.categoriaId = c.id
+                   persona p, categoria c
+                   WHERE p.categoriaId = c.id
                    
                 ORDER BY p.nombre" , [] );
 
@@ -157,15 +157,15 @@ DAO
         else return null;
     }
 
-    public static function personaCrear(string $nombre, string $apellidos, string $telefono, int $personaCategoriaId): bool
+    public static function personaCrear(string $nombre, string $apellidos, string $telefono, bool $estrella, int $personaCategoriaId): bool
     {
-        $consulta=self::ejecutarActualizacion("INSERT INTO Persona (nombre,apellidos,telefono, categoriaId) VALUES (?,?,?,?)",[$nombre, $apellidos, $telefono, $personaCategoriaId]);
+        $consulta=self::ejecutarActualizacion("INSERT INTO Persona (nombre,apellidos,telefono, estrella, categoriaId) VALUES (?,?,?,?,?)",[$nombre, $apellidos, $telefono,$estrella, $personaCategoriaId]);
         return $consulta;
     }
 
-    public static function personaModificar($id, $nombre, $apellidos, $telefono, $personaCategoriaId): bool
+    public static function personaModificar($id, $nombre, $apellidos, $telefono, $estrella, $personaCategoriaId): bool
     {
-        $consulta= self::ejecutarActualizacion("UPDATE Persona SET nombre=?, apellidos=?, telefono=?, categoriaId=? WHERE id=?",[$nombre, $apellidos,$telefono, $personaCategoriaId, $id]);
+        $consulta= self::ejecutarActualizacion("UPDATE Persona SET nombre=?, apellidos=?, telefono=?, estrella=?, categoriaId=? WHERE id=?",[$nombre, $apellidos,$telefono, $estrella, $personaCategoriaId, $id]);
         return $consulta;
     }
 
