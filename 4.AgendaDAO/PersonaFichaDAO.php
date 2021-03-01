@@ -52,7 +52,7 @@ if($nuevaEntrada){
     <label for="categoriaId">Categoria</label>
     <input type="number" name="categoriaId" value="<?=$categoriaId?>"><br>
 
-    <label for='estrella'>Lesionado</label>
+    <label for='estrella'>Estrella</label>
     <input type='checkbox' name='estrella' <?= $estrella ? "checked" : "" ?> />
 
     <?php if($nuevaEntrada){ ?>
