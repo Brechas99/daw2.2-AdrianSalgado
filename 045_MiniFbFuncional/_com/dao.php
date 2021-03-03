@@ -145,6 +145,107 @@ class DAO
         return $select->rowCount()==1 ? $rs[0] : null;
     }
 
+    public static function usuarioObtenerPorId(int $id): ?Usuario
+    {
+        $rs = self::ejecutarConsulta(
+            "SELECT * FROM Usuario WHERE id=?",
+            [$id]
+        );
+        if ($rs) return self::usuarioCrearDesdeRs($rs[0]);
+        else return null;
+    }
+
+
+    /* PUBLICACION */
+
+    private static function publicacionCrearDesdeRs(array $fila): Publicacion
+    {
+        if(isset($fila["destacadoHasta"]) && $fila["destacadoHasta"] == null)
+            $fila["destacadoHasta"] = "";
+        return new Publicacion($fila["id"], $fila["fecha"], $fila["emisorId"], $fila["destinatarioId"], $fila["destacadoHasta"], $fila["asunto"], $fila["contenido"]);
+    }
+
+    public static function publicacionObtenerPorId(int $id): ?Publicacion
+    {
+        $rs = self::ejecutarConsulta(
+            "SELECT * FROM Publicacion WHERE id=?",
+            [$id]
+        );
+        if ($rs) return self::publicacionCrearDesdeRs($rs[0]);
+        else return null;
+    }
+
+    public static function publicacionActualizar(int $id, string $fecha, int $emisorId, int $destinatarioId, string $destacadoHasta, string $asunto, string $contenido)
+    {
+        self::ejecutarActualizacion(
+            "UPDATE Publicacion SET fecha=?, emisorId=?, destinatarioId=?, destacadoHasta=?, asunto=?, contenido=? WHERE id=?",
+            [$fecha, $emisorId, $destinatarioId, $destacadoHasta, $asunto, $contenido, $id]
+        );
+    }
+
+    public static function publicacionCrear(string $fecha, int $emisorId, int $destinatarioId, string $destacadoHasta, string $asunto, string $contenido): bool
+    {
+        if($destacadoHasta == null)
+            $destacadoHasta= "";
+        return self::ejecutarActualizacion(
+            "INSERT INTO Publicacion (fecha, emisorId, destinatarioId, destacadoHasta, asunto, contenido) VALUES (?, ?, ?, ?, ?, ?)",
+            [$fecha, $emisorId, $destinatarioId, $destacadoHasta, $asunto, $contenido]
+        );
+    }
+
+    public static function publicacionObtenerTodas($posibleClausulaWhere): array
+    {
+        $datos = [];
+        $rs = self::ejecutarConsulta(
+            "SELECT * FROM Publicacion $posibleClausulaWhere ORDER BY fecha DESC",
+            []
+        );
+
+        foreach ($rs as $fila) {
+            $publicacion = self::publicacionCrearDesdeRs($fila);
+            array_push($datos, $publicacion);
+        }
+
+        return $datos;
+    }
+    public static function eliminarPublicacionPorId(int $id): bool
+    {
+
+        $sql = "DELETE FROM Publicacion WHERE id=?";
+
+        return self::ejecutarActualizacion($sql, [$id]);
+    }
+
+    public static function publicacionGuardarPorId(int $id, string $fecha, int $emisorId, int $destinatarioId, string $destacadoHasta, string $asunto, string $contenido): bool
+    {
+        return self::ejecutarActualizacion(
+            "UPDATE Publicacion SET fecha=?, emisorId=?, destinatarioId=?, destacadaHasta=?, asunto=?, contenido=? WHERE id=?",
+            [$fecha, $emisorId, $destinatarioId, $destacadoHasta, $asunto, $contenido, $id]
+        );
+    }
+
+    public static function publicacionFicha($id): array
+    {
+        $nuevaEntrada = ($id == -1);
+        if ($nuevaEntrada) {
+            $fecha= "<introduzca fecha>";
+            $emisorId= "<introduzca emisorId>";
+            $destinatarioId = "<introduzca destinatarioId>";
+            $destacadoHasta= "<introduzca destacadoHasta>";
+            $asunto= "<introduzca asunto>";
+            $contenido= "<introduzca contenido>";
+
+            return [$nuevaEntrada, $fecha, $emisorId, $destinatarioId, $destacadoHasta, $asunto, $contenido];
+        } else {
+            $rs= self::ejecutarConsulta(
+                "SELECT * FROM Publicacion WHERE id=?",
+                [$id]
+            );
+            return [$nuevaEntrada, $rs[0]["fecha"], $rs[0]["emisorId"], $rs[0]["destinatarioId"], $rs[0]["destacadaHasta"], $rs[0]["asunto"], $rs[0]["contenido"]];
+        }
+    }
+
+
     /*COOKIES*/
 
     public static function establecerSesionCookie(array $arrayUsuario)
