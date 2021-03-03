@@ -8,7 +8,7 @@
     $sql = "DELETE FROM categoria WHERE id=?";
 
     $sentencia = $conexion->prepare($sql);
-    $sqlConExito = $sentencia->execute([$id]);
+    $sqlConExito = $sentencia->execute($id);
 
     $correctoNormal = ($sqlConExito && $sentencia-> rowCount() == 1);
 

@@ -2,6 +2,8 @@
 require_once "_Varios.php";
 require_once "clases.php";
 
+session_start();
+
 class DAO
 {
     private static $pdo = null;
@@ -38,14 +40,18 @@ class DAO
         return $select->fetchAll();
     }
 
-
-    // ****SESIONES**** //
-
-    public static function haySesionRamIniciada(): bool
+    private static function ejecutarActualizacion(string $sql, array $parametros): bool
     {
-        // Está iniciada si isset($_SESSION["id"])
-        return isset($_SESSION["id"]);
+        if (!isset(self::$pdo)) self::$pdo = self::obtenerPdoConexionBd();
+
+        $actualizacion = self::$pdo->prepare($sql);
+        $sqlConExito = $actualizacion->execute($parametros);
+
+        return $sqlConExito;
     }
+
+
+    /* SESIONES */
 
     public static function establecerSesionRam(array $arrayUsuario)
     {
@@ -59,6 +65,19 @@ class DAO
         $_SESSION["apellidos"] = $arrayUsuario["apellidos"];
     }
 
+    public static function haySesionRamIniciada(): bool
+    {
+        return isset($_SESSION["id"]);
+    }
+
+    public static function destruirSesionRamYCookie()
+    {
+        session_destroy();
+       // actualizarCodigoCookieEnBD(Null);
+        borrarCookies();
+        unset($_SESSION); // Por si acaso
+    }
+
     public static function  pintarInfoSesion() {
         if (dao::haySesionRamIniciada()) {
             echo "<span>Sesión iniciada por <a href='UsuarioPerfilVer.php'>$_SESSION[identificador]</a> ($_SESSION[nombre] $_SESSION[apellidos]) <a href='SesionCerrar.php'>Cerrar sesión</a></span>";
@@ -68,61 +87,49 @@ class DAO
     }
 
 
-    public static function destruirSesionRamYCookie()
-    {
-        session_destroy();
-        actualizarCodigoCookieEnBD(Null);
-        borrarCookies();
-        unset($_SESSION); // Por si acaso
-    }
-
-
-
-
-
-    // ***COOKIES*** //
-
-    public static function establecerSesionCookie(array $arrayUsuario)
-    {
-        // Creamos un código cookie muy complejo (no necesariamente único).
-        $codigoCookie = generarCadenaAleatoria(32); // Random...
-
-        actualizarCodigoCookieEnBD($codigoCookie);
-
-        // Enviamos al cliente, en forma de cookies, el identificador y el codigoCookie:
-        setcookie("identificador", $arrayUsuario["identificador"], time() + 600);
-        setcookie("codigoCookie", $codigoCookie, time() + 600);
-    }
-
-    public static function actualizarCodigoCookieEnBD(?string $codigoCookie)
-    {
-        $conexion = obtenerPdoConexionBD();
-        $sql = "UPDATE Usuario SET codigoCookie=? WHERE id=?";
-        $sentencia = $conexion->prepare($sql);
-        $sentencia->execute([$codigoCookie, $_SESSION["id"]]); // TODO Comprobar si va bien con null.
-
-        // TODO Para una seguridad óptima convendría anotar en la BD la fecha de caducidad de la cookie y no aceptar ninguna cookie pasada dicha fecha.
-    }
-
 
 
     // ***USUARIO** //
 
-    public static function crearUsuario(string $usuarioCliente, string $contrasenna): ?usuario
+    public static function usuarioFicha($id): array
+    {
+        $nuevaEntrada = ($id == -1);
+        if ($nuevaEntrada) {
+            $usuarioIdentificador= "<introduzca identificador>";
+            $usuarioContrasenna= "<introduzca contrasenna>";
+            $usaurioNombre = "<introduzca nombre>";
+            $usuarioApellidos= "<introduzca apellidos>";
+
+            return [$nuevaEntrada, $usuarioIdentificador, $usuarioContrasenna, $usaurioNombre, $usuarioApellidos];
+        } else {
+            $rs= self::ejecutarConsulta(
+                "SELECT * FROM Usuario WHERE id=?",
+                [$id]
+            );
+            return [$nuevaEntrada, $rs[0]["identificador"], $rs[0]["contrasenna"], $rs[0]["nombre"], $rs[0]["apellidos"]];
+        }
+    }
+
+    public static function usuarioModificar(int $id,string $identificador, string $contrasenna, string $codigoCookie, string $caducidadCodigoCookie, int $tipoUsuario, string $nombre, string $apellidos): bool
+    {
+        return self::ejecutarActualizacion(
+            "UPDATE Usuario SET identificador=?, contrasenna=?, codigoCookie=?, caducidadCodigoCookie=?, tipoUsuario=?, nombre=?, apellidos=? WHERE id=?",
+            [$identificador, $contrasenna, $codigoCookie, $caducidadCodigoCookie, $tipoUsuario, $nombre, $apellidos, $id]
+        );
+    }
+
+    public static function crearUsuario(string $identificador, string $contrasenna, string $codigoCookie, string $caducidadCodigoCookie, int $tipoUsuario, string $nombre, string $apellidos): bool
     {
         $rs = self::ejecutarConsulta(
-            "SELECT * FROM usuario WHERE identificador=? AND contrasenna =?",
-            [$usuarioCliente, $contrasenna]
+            "INSERT INTO usuario (identificador, contrasenna, codigoCookie, caducidadCodigoCookie, tipoUsuario, nombre, apellidos) VALUES (?,?,?,?,?,?,?)",
+            [$identificador, $contrasenna, $codigoCookie, $caducidadCodigoCookie, $tipoUsuario, $nombre, $apellidos]
         );
-        if ($rs) return self::usuarioCrearDesdeRS($rs[0]);
-        else return null;
-
     }
 
 
     private static function usuarioCrearDesdeRS(array $usuario): usuario
     {
-        return new usuario($usuario["id"], $usuario["usuarioCliente"],$usuario["contrasenna"], $usuario["codigoCookie"]);
+        return new usuario($usuario["id"], $usuario["identificador"],$usuario["contrasenna"], $usuario["nombre"], $usuario["apellidos"], $usuario["codigoCookie"]);
     }
 
     public static function obtenerUsuarioPorContrasenna(string $identificador, string $contrasenna): ?array
@@ -138,13 +145,27 @@ class DAO
         return $select->rowCount()==1 ? $rs[0] : null;
     }
 
+    /*COOKIES*/
 
-    public static function marcarSesionComoIniciada($usuario)
+    public static function establecerSesionCookie(array $arrayUsuario)
     {
+        // Creamos un código cookie muy complejo (no necesariamente único).
+        $codigoCookie = generarCadenaAleatoria(32); // Random...
 
-        $_SESSION["id"] = $usuario->getId();
-        $_SESSION["usuarioCliente"] = $usuario->getUsuarioCliente();
-        $_SESSION["usuarioContrasenna"] = $usuario->getUsuarioContrasenna();
+        // actualizarCodigoCookieEnBD($codigoCookie);
+
+        // Enviamos al cliente, en forma de cookies, el identificador y el codigoCookie:
+        setcookie("identificador", $arrayUsuario["identificador"], time() + 600);
+        setcookie("codigoCookie", $codigoCookie, time() + 600);
     }
+
+    function borrarCookies()
+    {
+        setcookie("identificador", "", time() - 3600); // Tiempo en el pasado, para (pedir) borrar la cookie.
+        setcookie("codigoCookie", "", time() - 3600); // Tiempo en el pasado, para (pedir) borrar la cookie.}
+    }
+
+
+
 
 }

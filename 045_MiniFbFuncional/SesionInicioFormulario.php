@@ -22,7 +22,7 @@
 <h1>Iniciar sesión</h1>
 
 <?php if ($datosErroneos) { ?>
-    <p style='color: red;'>No se ha podido iniciar sesión con los datos proporcionados. Inténtelo de nuevo.</p>
+    <p style='color: #ff0000;'>No se ha podido iniciar sesión con los datos proporcionados. Inténtelo de nuevo.</p>
 <?php } ?>
 
 <form action='SesionInicioComprobar.php' method="post">
@@ -38,7 +38,7 @@
     <input type='submit' value='Iniciar Sesión'>
 </form>
 
-<p>O, si no tienes una cuenta aún, <a href='UsuarioNuevoCrear.php'>créala aquí</a>.</p>
+<p>Si no tienes una cuenta aún, <a href='UsuarioPerfilVer.php'>Créala aquí</a>.</p>
 
 </body>
 
